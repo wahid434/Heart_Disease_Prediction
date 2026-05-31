@@ -1,31 +1,66 @@
-# app.py
-
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, render_template, request
 import pickle
-import numpy as np
-
-# Load the trained model
-model_path = 'model.pkl'
-with open(model_path, 'rb') as file:
-    model = pickle.load(file)
+import pandas as pd
 
 app = Flask(__name__)
 
-@app.route('/')
+# load trained model
+model = pickle.load(open("heart_disease_model.pkl", "rb"))
+
+@app.route("/")
 def home():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/predict', methods=['POST'])
+
+@app.route("/predict", methods=["POST"])
 def predict():
-    # Extract data from form
-    int_features = [int(x) for x in request.form.values()]
-    final_features = [np.array(int_features)]
-    
-    # Make prediction
-    prediction = model.predict(final_features)
-    output = 'Placed' if prediction[0] == 1 else 'Not Placed'
 
-    return render_template('index.html', prediction_text='Prediction: {}'.format(output))
+    data = {
+        "age": float(request.form["age"]),
+        "trestbps": float(request.form["trestbps"]),
+        "chol": float(request.form["chol"]),
+        "thalch": float(request.form["thalch"]),
+        "oldpeak": float(request.form["oldpeak"]),
+        "ca": float(request.form["ca"]),
+
+        "sex": request.form["sex"],
+        "cp": request.form["cp"],
+        "fbs": request.form["fbs"],
+        "restecg": request.form["restecg"],
+        "exang": request.form["exang"],
+        "slope": request.form["slope"],
+        "thal": request.form["thal"],
+        "dataset": request.form["dataset"],
+    }
+
+    df = pd.DataFrame([data])
+
+    # convert to one-hot exactly like training
+    df = pd.get_dummies(df)
+
+    # match training columns
+    model_columns = pickle.load(open("model_columns.pkl", "rb"))
+
+    for col in model_columns:
+        if col not in df.columns:
+            df[col] = 0
+
+    df = df[model_columns]
+
+    prediction = model.predict(df)[0]
+    probability = model.predict_proba(df)[0][1]
+
+    if prediction == 1:
+        result = f"Heart Disease Detected ({probability*100:.2f}% risk)"
+    else:
+        result = f"No Heart Disease ({(1-probability)*100:.2f}% confidence)"
+
+    return render_template(
+        "index.html",
+        prediction_text=result
+    )
+
 
 if __name__ == "__main__":
     app.run(debug=True)
+    

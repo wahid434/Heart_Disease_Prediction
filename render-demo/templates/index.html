@@ -2,75 +2,144 @@
 <html>
 
 <head>
-    <title>Student Placement Prediction</title>
+    <title>Heart Disease Prediction</title>
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 50px;
+            font-family: Arial;
+            background: #f5f5f5;
+            padding: 40px;
         }
 
-        .form-container {
-            max-width: 500px;
+        .container {
+            width: 700px;
             margin: auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .1);
         }
 
-        .form-container input {
+        input,
+        select {
             width: 100%;
             padding: 10px;
-            margin: 5px 0 20px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
+            margin-top: 5px;
+            margin-bottom: 15px;
         }
 
-        .form-container input[type="submit"] {
-            background-color: #4CAF50;
+        button {
+            background: #d62828;
             color: white;
+            padding: 12px;
+            width: 100%;
             border: none;
-        }
-
-        .form-container input[type="submit"]:hover {
-            background-color: #45a049;
+            border-radius: 8px;
+            font-size: 18px;
         }
 
         .result {
-            font-size: 1.5em;
-            color: #4CAF50;
-            text-align: center;
             margin-top: 20px;
+            text-align: center;
+            font-size: 24px;
+            color: green;
         }
     </style>
 </head>
 
 <body>
-    <div class="form-container">
-        <h2>Student Placement Prediction</h2>
+
+    <div class="container">
+
+        <h2>Heart Disease Prediction System</h2>
+
         <form action="/predict" method="post">
-            <label for="IQ">IQ:</label>
-            <input type="number" name="IQ" required>
 
-            <label for="CGPA">CGPA:</label>
-            <input type="number" step="0.01" name="CGPA" required>
+            <label>Age</label>
+            <input type="number" name="age" required>
 
-            <label for="10th_Marks">10th Marks:</label>
-            <input type="number" name="10th_Marks" required>
+            <label>Resting Blood Pressure</label>
+            <input type="number" name="trestbps" required>
 
-            <label for="12th_Marks">12th Marks:</label>
-            <input type="number" name="12th_Marks" required>
+            <label>Cholesterol</label>
+            <input type="number" name="chol" required>
 
-            <label for="Communication_Skills">Communication Skills:</label>
-            <input type="number" step="0.01" name="Communication_Skills" required>
+            <label>Max Heart Rate</label>
+            <input type="number" name="thalch" required>
 
-            <input type="submit" value="Predict">
+            <label>Oldpeak</label>
+            <input type="number" step="0.1" name="oldpeak" required>
+
+            <label>Number of Major Vessels (ca)</label>
+            <input type="number" name="ca" required>
+
+            <label>Sex</label>
+            <select name="sex">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <label>Chest Pain Type</label>
+            <select name="cp">
+                <option value="typical angina">Typical Angina</option>
+                <option value="asymptomatic">Asymptomatic</option>
+                <option value="non-anginal">Non-anginal</option>
+                <option value="atypical angina">Atypical Angina</option>
+            </select>
+
+            <label>Fasting Blood Sugar</label>
+            <select name="fbs">
+                <option value="TRUE">True</option>
+                <option value="FALSE">False</option>
+            </select>
+
+            <label>Rest ECG</label>
+            <select name="restecg">
+                <option value="normal">Normal</option>
+                <option value="lv hypertrophy">LV Hypertrophy</option>
+                <option value="st-t abnormality">ST-T abnormality</option>
+            </select>
+
+            <label>Exercise Induced Angina</label>
+            <select name="exang">
+                <option value="TRUE">Yes</option>
+                <option value="FALSE">No</option>
+            </select>
+
+            <label>Slope</label>
+            <select name="slope">
+                <option value="upsloping">Upsloping</option>
+                <option value="flat">Flat</option>
+                <option value="downsloping">Downsloping</option>
+            </select>
+
+            <label>Thal</label>
+            <select name="thal">
+                <option value="normal">Normal</option>
+                <option value="fixed defect">Fixed Defect</option>
+                <option value="reversable defect">Reversible Defect</option>
+            </select>
+
+            <label>Dataset</label>
+            <select name="dataset">
+                <option value="Cleveland">Cleveland</option>
+                <option value="Hungary">Hungary</option>
+                <option value="VA">VA</option>
+                <option value="Switzerland">Switzerland</option>
+            </select>
+
+            <button type="submit">Predict</button>
+
         </form>
+
         {% if prediction_text %}
-        <div class="result">{{ prediction_text }}</div>
+        <div class="result">
+            {{ prediction_text }}
+        </div>
         {% endif %}
+
     </div>
+
 </body>
 
 </html>
